@@ -11,6 +11,7 @@ class Account(object):
     def __init__(self, name: str, opening_balance: float = 0.0):
         cursor = db.execute("SELECT name, balance FROM accounts WHERE (name = ?)", (name,))
         row = cursor.fetchone()
+
         if row:
             self.name, self._balance = row
             print("Retrieved record for {}. ".format(self.name), end='')
@@ -18,6 +19,7 @@ class Account(object):
             self.name = name
             self._balance = opening_balance
             cursor.execute("INSERT INTO accounts VALUES(?, ?)", (name, opening_balance))
+            cursor.connection.commit()
             print("Account created for {}. ".format(self.name), end='')
         self.show_balance()
 
@@ -48,3 +50,9 @@ if __name__ == '__main__':
     john.withdraw(30)
     john.withdraw(0)
     john.show_balance()
+
+    terry = Account("Terry")
+    graham = Account("Graham", 9000)
+    eric = Account("Eric", 7000)
+
+    db.close()
