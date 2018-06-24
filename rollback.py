@@ -30,10 +30,10 @@ class Account(object):
         self.show_balance()
 
     def _save_update(self, amount):
-        new_balance = self._balance - amount
+        new_balance = self._balance + amount
         withdrawal_time = Account._current_time()
         db.execute("UPDATE accounts SET balance = ? WHERE (name = ?)", (new_balance, self.name))
-        db.execute("INSERT INTO history VALUES (?, ?, ?)", (withdrawal_time, self.name, -amount))
+        db.execute("INSERT INTO history VALUES (?, ?, ?)", (withdrawal_time, self.name, amount))
         db.commit()
         self._balance = new_balance
 
