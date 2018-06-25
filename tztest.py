@@ -43,8 +43,9 @@ class Account(object):
     def _save_update(self, amount):
         new_balance = self._balance + amount
         deposit_time, zone = Account._current_time() # unpacking the return tuple
+        pickled_zone = pickle.dumps(zone)
         db.execute("UPDATE accounts SET balance = ? WHERE (name = ?)", (new_balance, self.name))
-        db.execute("INSERT INTO history VALUES (?, ?, ?)", (deposit_time, self.name, amount))
+        db.execute("INSERT INTO history VALUES (?, ?, ?, ?)", (deposit_time, self.name, amount, pickled_zone))
         db.commit()
         self._balance = new_balance
 
