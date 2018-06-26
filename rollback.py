@@ -2,7 +2,7 @@ import sqlite3
 import pytz
 import datetime
 
-db = sqlite3.connect("accounts.sqlite")
+db = sqlite3.connect("accounts.sqlite", detect_types=sqlite3.PARSE_DECLTYPES)
 db.execute("CREATE TABLE IF NOT EXISTS accounts (name TEXT PRIMARY KEY NOT NULL, balance INTEGER NOT NULL)")
 db.execute("CREATE TABLE IF NOT EXISTS history (time TIMESTAMP NOT NULL, "
            "account TEXT NOT NULL, amount INTEGER NOT NULL, PRIMARY KEY (time, account))")
