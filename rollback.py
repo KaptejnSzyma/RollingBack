@@ -15,9 +15,8 @@ class Account(object):
 
     @staticmethod
     def _current_time():
-        return pytz.utc.localize(datetime.datetime.utcnow())
-        # local_time = pytz.utc.localize(datetime.datetime.utcnow())
-        # return local_time.astimezone()
+        return 1
+        # return pytz.utc.localize(datetime.datetime.utcnow())
 
     def __init__(self, name: str, opening_balance: float = 0.0):
         cursor = db.execute("SELECT name, balance FROM accounts WHERE (name = ?)", (name,))
@@ -37,9 +36,13 @@ class Account(object):
     def _save_update(self, amount):
         new_balance = self._balance + amount
         withdrawal_time = Account._current_time()
-        db.execute("UPDATE accounts SET balance = ? WHERE (name = ?)", (new_balance, self.name))
-        db.execute("INSERT INTO history VALUES (?, ?, ?)", (withdrawal_time, self.name, amount))
-        db.commit()
+        try:
+            db.execute("UPDATE accounts SET balance = ? WHERE (name = ?)", (new_balance, self.name))
+            db.execute("INSERT INTO history VALUES (?, ?, ?)", (withdrawal_time, self.name, amount))
+        except sqlite3.Error:
+            db.rollback()
+        finally:
+            db.commit()
         self._balance = new_balance
 
     def deposit(self, amount: int) -> float:
