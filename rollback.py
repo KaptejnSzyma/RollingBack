@@ -15,8 +15,7 @@ class Account(object):
 
     @staticmethod
     def _current_time():
-        return 1
-        # return pytz.utc.localize(datetime.datetime.utcnow())
+        return pytz.utc.localize(datetime.datetime.utcnow())
 
     def __init__(self, name: str, opening_balance: float = 0.0):
         cursor = db.execute("SELECT name, balance FROM accounts WHERE (name = ?)", (name,))
